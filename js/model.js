@@ -176,7 +176,7 @@ const Model = (() => {
       excerpt: "El equipo mostró una gran actuación colectiva con un resultado de 28-14 que consolida el liderato en la liga madrileña de rugby.",
       date: "11 Enero 2025",
       category: "Partido",
-      image: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=600&q=80"
+      image: "https://www.realcanoe.es/images/2025/05/18/rugby.png"
     },
     {
       id: 2,
