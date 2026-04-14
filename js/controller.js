@@ -238,7 +238,7 @@ const Controller = (() => {
   ============================================= */
   function _animateCounters() {
     const targets = [
-      { id: 'stat-jugadores', end: 45, duration: 2000 },
+      { id: 'stat-jugadores', end: 277, duration: 2000 },
       { id: 'stat-titulos', end: 12, duration: 1500 },
       { id: 'stat-fundacion', end: 1930, duration: 2500, start: 1900 }
     ];
