@@ -383,7 +383,7 @@ a {
 /* Filter Buttons */
 .btn-filter {
   background: transparent;
-  color: var(--color-dark);
+  color: #fff;
   font-family: var(--font-sub);
   font-weight: 600;
   font-size: 0.9rem;
@@ -391,7 +391,7 @@ a {
   text-transform: uppercase;
   padding: 8px 20px;
   border-radius: 100px;
-  border: 2px solid rgba(33, 60, 148, 0.2);
+  border: 2px solid rgba(255, 255, 255, 0.35);
   transition: var(--transition-base);
 }
 
