@@ -1699,3 +1699,134 @@ a {
 ======================== */
 .z-1 { z-index: 1; }
 .z-2 { z-index: 2; }
+
+/* ========================
+   18. Auth — Navbar
+======================== */
+.btn-nav-login {
+  background: transparent;
+  border: 1.5px solid rgba(255,255,255,0.35);
+  color: var(--color-white);
+  font-size: 0.82rem;
+  font-family: var(--font-sub);
+  letter-spacing: 0.03em;
+  padding: 6px 14px;
+  border-radius: var(--radius-sm);
+  transition: var(--transition-fast);
+  cursor: pointer;
+}
+.btn-nav-login:hover {
+  background: rgba(255,255,255,0.12);
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+.nav-user-info {
+  display: flex !important;
+}
+.nav-username {
+  font-family: var(--font-sub);
+  font-size: 0.82rem;
+  color: var(--color-accent);
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+.btn-nav-logout {
+  background: transparent;
+  border: none;
+  color: rgba(255,255,255,0.5);
+  padding: 4px 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: var(--transition-fast);
+}
+.btn-nav-logout:hover {
+  color: var(--color-danger);
+}
+
+/* ========================
+   19. Admin — Player Cards
+======================== */
+.player-admin-actions {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  gap: 6px;
+  z-index: 10;
+}
+
+.btn-admin-edit,
+.btn-admin-delete {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  transition: var(--transition-fast);
+  opacity: 0.85;
+}
+.btn-admin-edit {
+  background: var(--color-accent);
+  color: var(--color-dark);
+}
+.btn-admin-edit:hover {
+  opacity: 1;
+  transform: scale(1.1);
+}
+.btn-admin-delete {
+  background: var(--color-danger);
+  color: #fff;
+}
+.btn-admin-delete:hover {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+/* ========================
+   20. Modales Admin
+======================== */
+.modal-canoe .modal-content {
+  background: var(--color-dark-2);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: var(--radius-md);
+  color: var(--color-white);
+}
+.modal-canoe .modal-header {
+  padding: 1.25rem 1.5rem 0.75rem;
+}
+.modal-canoe .modal-body {
+  padding: 1rem 1.5rem 1.5rem;
+}
+.modal-canoe .modal-title {
+  font-family: var(--font-sub);
+  font-size: 1.1rem;
+  color: var(--color-white);
+}
+.modal-canoe .form-label {
+  font-size: 0.85rem;
+  margin-bottom: 4px;
+}
+.modal-canoe .form-text {
+  font-size: 0.75rem;
+}
+
+.edit-photo-preview {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--color-primary);
+  background: var(--color-dark);
+}
+
+.spin {
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

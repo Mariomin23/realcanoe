@@ -1,9 +1,3 @@
-/**
- * VIEW — Real Canoe Rugby NC
- * Arquitectura MVC: Capa de Presentación
- * Responsable de renderizar todos los componentes del DOM.
- */
-
 const View = (() => {
 
   /* =============================================
@@ -53,9 +47,12 @@ const View = (() => {
   /* =============================================
      RENDER: JUGADORES
   ============================================= */
-  function renderPlayers(players) {
+  function renderPlayers(players, userRole) {
     const container = document.getElementById('players-container');
     if (!container) return;
+
+    const canEdit   = userRole === 'admin' || userRole === 'superadmin';
+    const canDelete = userRole === 'superadmin';
 
     if (players.length === 0) {
       container.innerHTML = `
@@ -69,7 +66,27 @@ const View = (() => {
 
     container.innerHTML = players.map((player, i) => `
       <div class="col-xl-4 col-lg-4 col-md-6 player-item" data-category="${player.category}" data-aos="fade-up" data-aos-delay="${(i % 3) * 100}">
-        <article class="player-card" aria-label="Jugador: ${player.name}">
+        <article class="player-card position-relative" aria-label="Jugador: ${player.name}">
+          ${canEdit ? `
+          <div class="player-admin-actions">
+            <button
+              class="btn-admin-edit"
+              onclick="Controller.openEditPlayer('${player._id}', '${_escAttr(player.name)}', '${_escAttr(player.position)}', '${player.number}', '${_escAttr(player.avatar)}')"
+              title="Editar jugador"
+              aria-label="Editar ${player.name}"
+            >
+              <i class="bi bi-pencil-fill"></i>
+            </button>
+            ${canDelete ? `
+            <button
+              class="btn-admin-delete"
+              onclick="Controller.confirmDeletePlayer('${player._id}', '${_escAttr(player.name)}')"
+              title="Eliminar jugador"
+              aria-label="Eliminar ${player.name}"
+            >
+              <i class="bi bi-trash-fill"></i>
+            </button>` : ''}
+          </div>` : ''}
           <div class="player-card-img">
             <img
               src="${player.avatar}"
@@ -106,7 +123,6 @@ const View = (() => {
       </div>
     `).join('');
 
-    // Re-trigger AOS for new elements
     _refreshAOS();
   }
 
@@ -151,10 +167,7 @@ const View = (() => {
           }
         </td>
         <td>
-          ${team.isHighlighted
-            ? `🏆 ${team.name}`
-            : team.name
-          }
+          ${team.isHighlighted ? `🏆 ${team.name}` : team.name}
         </td>
         <td>${team.played}</td>
         <td><strong>${team.points}</strong></td>
@@ -200,14 +213,61 @@ const View = (() => {
   }
 
   /* =============================================
+     AUTH UI
+  ============================================= */
+  function updateAuthUI(user) {
+    const loginBtn   = document.getElementById('navLoginBtn');
+    const userInfo   = document.getElementById('navUserInfo');
+    const userLabel  = document.getElementById('navUsername');
+    const addPlayerBtn = document.getElementById('addPlayerBtn');
+
+    if (!loginBtn || !userInfo) return;
+
+    if (user) {
+      loginBtn.classList.add('d-none');
+      userInfo.classList.remove('d-none');
+      if (userLabel) userLabel.textContent = user.username;
+
+      const canEdit = user.role === 'admin' || user.role === 'superadmin';
+      if (addPlayerBtn) addPlayerBtn.classList.toggle('d-none', !canEdit);
+    } else {
+      loginBtn.classList.remove('d-none');
+      userInfo.classList.add('d-none');
+      if (addPlayerBtn) addPlayerBtn.classList.add('d-none');
+    }
+  }
+
+  function showLoginError(msg) {
+    const el = document.getElementById('loginError');
+    if (el) { el.textContent = msg; el.classList.remove('d-none'); }
+  }
+
+  function hideLoginError() {
+    const el = document.getElementById('loginError');
+    if (el) el.classList.add('d-none');
+  }
+
+  function setLoginLoading(loading) {
+    const btn = document.getElementById('loginSubmitBtn');
+    if (!btn) return;
+    btn.disabled = loading;
+    btn.innerHTML = loading
+      ? '<i class="bi bi-arrow-repeat spin me-2"></i>Entrando...'
+      : '<i class="bi bi-box-arrow-in-right me-2"></i>Iniciar sesión';
+  }
+
+  /* =============================================
      UTILIDADES PRIVADAS
   ============================================= */
   function _capitalize(str) {
     return str.charAt(0).toUpperCase() + str.slice(1);
   }
 
+  function _escAttr(str) {
+    return String(str || '').replace(/'/g, '&#39;').replace(/"/g, '&quot;');
+  }
+
   function _refreshAOS() {
-    // Pequeño delay para que el DOM se actualice antes de re-observar
     requestAnimationFrame(() => {
       const elements = document.querySelectorAll('[data-aos]');
       elements.forEach(el => {
@@ -220,7 +280,7 @@ const View = (() => {
   }
 
   /* =============================================
-     FEEDBACK: FORMULARIO
+     FEEDBACK: FORMULARIO CONTACTO
   ============================================= */
   function showFormSuccess() {
     document.getElementById('form-success').classList.remove('d-none');
@@ -242,15 +302,16 @@ const View = (() => {
     loader.classList.toggle('d-none', !isLoading);
   }
 
-  /* =============================================
-     API PÚBLICA
-  ============================================= */
   return {
     renderUpcomingMatches,
     renderPlayers,
     renderCalendarMatches,
     renderStandings,
     renderNews,
+    updateAuthUI,
+    showLoginError,
+    hideLoginError,
+    setLoginLoading,
     showFormSuccess,
     showFormError,
     setFormLoading

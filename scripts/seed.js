@@ -4,6 +4,7 @@ const Player = require('../api/models/Player');
 const Match = require('../api/models/Match');
 const News = require('../api/models/News');
 const Standings = require('../api/models/Standings');
+const User = require('../api/models/User');
 
 const players = [
   { name: "Carlos Martínez", number: 1, position: "Pilar", category: "delantera", nationality: "🇪🇸", age: 26, stats: { partidos: 22, tries: 3, tackles: 87 }, avatar: "https://ui-avatars.com/api/?name=Carlos+Martinez&background=213c94&color=fef744&size=200&bold=true" },
@@ -49,6 +50,11 @@ const standings = [
   { position: 8, name: "Arquitectura RC", played: 6, points: 5 }
 ];
 
+const defaultUsers = [
+  { username: 'admin', password: 'canoe2025admin', role: 'admin' },
+  { username: 'superadmin', password: 'canoe2025super', role: 'superadmin' }
+];
+
 async function seed() {
   try {
     await mongoose.connect(process.env.MONGODB_URI);
@@ -68,7 +74,17 @@ async function seed() {
       Standings.insertMany(standings)
     ]);
 
-    console.log('Seed completado: jugadores, partidos, noticias y clasificación insertados.');
+    for (const u of defaultUsers) {
+      const exists = await User.findOne({ username: u.username });
+      if (!exists) {
+        await User.create(u);
+        console.log(`Usuario creado: ${u.username} (${u.role})`);
+      } else {
+        console.log(`Usuario ya existe: ${u.username}`);
+      }
+    }
+
+    console.log('Seed completado.');
     process.exit(0);
   } catch (err) {
     console.error('Error en seed:', err.message);
