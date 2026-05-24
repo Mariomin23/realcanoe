@@ -1721,7 +1721,7 @@ a {
   color: var(--color-accent);
 }
 
-.nav-user-info {
+.nav-user-info:not(.d-none) {
   display: flex !important;
 }
 .nav-username {
