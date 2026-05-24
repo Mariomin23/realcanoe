@@ -7,31 +7,31 @@ const app = express();
 
 app.use(express.json({ limit: '10kb' }));
 
-// Serve static assets without exposing server files
+// Serve static assets
 app.use('/css', express.static(path.join(__dirname, 'css')));
 app.use('/js', express.static(path.join(__dirname, 'js')));
 
-// Connect DB before each request (cached for serverless)
-app.use(async (req, res, next) => {
+// Serve frontend — no DB needed
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+// DB middleware only for API routes
+const dbMiddleware = async (req, res, next) => {
   try {
     await connectDB();
     next();
   } catch (err) {
     res.status(503).json({ error: 'Base de datos no disponible' });
   }
-});
+};
 
 // API routes
-app.use('/api/auth', require('./api/routes/auth'));
-app.use('/api/players', require('./api/routes/players'));
-app.use('/api/matches', require('./api/routes/matches'));
-app.use('/api/news', require('./api/routes/news'));
-app.use('/api/contact', require('./api/routes/contact'));
-
-// Serve frontend
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
-});
+app.use('/api/auth',    dbMiddleware, require('./api/routes/auth'));
+app.use('/api/players', dbMiddleware, require('./api/routes/players'));
+app.use('/api/matches', dbMiddleware, require('./api/routes/matches'));
+app.use('/api/news',    dbMiddleware, require('./api/routes/news'));
+app.use('/api/contact', dbMiddleware, require('./api/routes/contact'));
 
 // Export for Vercel serverless
 module.exports = app;
