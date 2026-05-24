@@ -12,8 +12,21 @@ app.use('/css', express.static(path.join(__dirname, 'css')));
 app.use('/js', express.static(path.join(__dirname, 'js')));
 
 // Serve frontend — no DB needed
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
+const pages = ['/', '/plantilla', '/calendario', '/noticias', '/contacto'];
+const htmlFiles = {
+  '/':          'index.html',
+  '/plantilla': 'plantilla.html',
+  '/calendario':'calendario.html',
+  '/noticias':  'noticias.html',
+  '/contacto':  'contacto.html',
+};
+pages.forEach(route => {
+  app.get(route, (req, res) => {
+    res.sendFile(path.join(__dirname, htmlFiles[route]));
+  });
+  app.get(route + '.html', (req, res) => {
+    res.sendFile(path.join(__dirname, htmlFiles[route]));
+  });
 });
 
 // DB middleware only for API routes
