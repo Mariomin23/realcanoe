@@ -99,6 +99,16 @@
           <p class="section-subtitle dark">Todo lo que pasa en el Real Canoe Rugby NC, de primera mano.</p>
         </div>
 
+        <div class="text-center mb-4 d-none" id="addNewsBtn">
+          <button
+            class="btn btn-canoe-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#addNewsModal"
+          >
+            <i class="bi bi-plus-circle-fill me-2"></i>Añadir noticia
+          </button>
+        </div>
+
         <div class="row g-4 mt-2" id="news-container">
           <!-- Populated by JS / MVC Controller -->
         </div>
@@ -222,6 +232,94 @@
             <button type="submit" class="btn btn-canoe-primary w-100" id="loginSubmitBtn">
               <i class="bi bi-box-arrow-in-right me-2"></i>Iniciar sesión
             </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: EDITAR NOTICIA -->
+  <div class="modal fade" id="editNewsModal" tabindex="-1" aria-labelledby="editNewsModalLabel" aria-modal="true" role="dialog">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content modal-canoe">
+        <div class="modal-header border-0 pb-0">
+          <h5 class="modal-title" id="editNewsModalLabel">
+            <i class="bi bi-pencil-fill me-2 text-accent"></i>Editar noticia
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body pt-3">
+          <form id="editNewsForm" novalidate>
+            <div class="mb-3">
+              <label for="editNewsTitle" class="form-label text-light">Título *</label>
+              <input type="text" class="form-control form-control-canoe" id="editNewsTitle" required maxlength="200" />
+            </div>
+            <div class="mb-3">
+              <label for="editNewsExcerpt" class="form-label text-light">Resumen</label>
+              <textarea class="form-control form-control-canoe" id="editNewsExcerpt" rows="3" maxlength="600"></textarea>
+            </div>
+            <div class="row g-3 mb-3">
+              <div class="col-6">
+                <label for="editNewsDate" class="form-label text-light">Fecha (DD/MM/AAAA)</label>
+                <input type="text" class="form-control form-control-canoe" id="editNewsDate" placeholder="25/05/2026" maxlength="10" />
+              </div>
+              <div class="col-6">
+                <label for="editNewsCategory" class="form-label text-light">Categoría</label>
+                <input type="text" class="form-control form-control-canoe" id="editNewsCategory" maxlength="60" placeholder="Club, Partido..." />
+              </div>
+            </div>
+            <div class="mb-4">
+              <label for="editNewsImage" class="form-label text-light">URL imagen</label>
+              <input type="url" class="form-control form-control-canoe" id="editNewsImage" placeholder="https://..." />
+            </div>
+            <div class="d-flex gap-2">
+              <button type="button" class="btn btn-outline-secondary flex-grow-1" data-bs-dismiss="modal">Cancelar</button>
+              <button type="submit" class="btn btn-canoe-primary flex-grow-1" id="editNewsSaveBtn">Guardar cambios</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: AÑADIR NOTICIA -->
+  <div class="modal fade" id="addNewsModal" tabindex="-1" aria-labelledby="addNewsModalLabel" aria-modal="true" role="dialog">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content modal-canoe">
+        <div class="modal-header border-0 pb-0">
+          <h5 class="modal-title" id="addNewsModalLabel">
+            <i class="bi bi-plus-circle-fill me-2 text-accent"></i>Añadir noticia
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body pt-3">
+          <form id="addNewsForm" novalidate>
+            <div class="mb-3">
+              <label for="addNewsTitle" class="form-label text-light">Título *</label>
+              <input type="text" class="form-control form-control-canoe" id="addNewsTitle" required maxlength="200" placeholder="Título de la noticia" />
+            </div>
+            <div class="mb-3">
+              <label for="addNewsExcerpt" class="form-label text-light">Resumen</label>
+              <textarea class="form-control form-control-canoe" id="addNewsExcerpt" rows="3" maxlength="600" placeholder="Breve descripción..."></textarea>
+            </div>
+            <div class="row g-3 mb-3">
+              <div class="col-6">
+                <label for="addNewsDate" class="form-label text-light">Fecha (DD/MM/AAAA)</label>
+                <input type="text" class="form-control form-control-canoe" id="addNewsDate" placeholder="25/05/2026" maxlength="10" />
+              </div>
+              <div class="col-6">
+                <label for="addNewsCategory" class="form-label text-light">Categoría</label>
+                <input type="text" class="form-control form-control-canoe" id="addNewsCategory" maxlength="60" placeholder="Club, Partido..." />
+              </div>
+            </div>
+            <div class="mb-4">
+              <label for="addNewsImage" class="form-label text-light">URL imagen</label>
+              <input type="url" class="form-control form-control-canoe" id="addNewsImage" placeholder="https://..." />
+            </div>
+            <div class="d-flex gap-2">
+              <button type="button" class="btn btn-outline-secondary flex-grow-1" data-bs-dismiss="modal">Cancelar</button>
+              <button type="submit" class="btn btn-canoe-primary flex-grow-1" id="addNewsSaveBtn">Añadir noticia</button>
+            </div>
           </form>
         </div>
       </div>

@@ -98,6 +98,16 @@
           <p class="section-subtitle">Sigue todos los partidos, resultados y clasificación de nuestra temporada.</p>
         </div>
 
+        <div class="text-center mb-4 d-none" id="addMatchBtn">
+          <button
+            class="btn btn-canoe-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#addMatchModal"
+          >
+            <i class="bi bi-plus-circle-fill me-2"></i>Añadir partido
+          </button>
+        </div>
+
         <div class="row g-4 mt-2">
           <div class="col-lg-8">
             <div class="calendar-table-wrapper" data-aos="fade-right">
@@ -118,6 +128,7 @@
                       <th scope="col">Resultado</th>
                       <th scope="col">Visitante</th>
                       <th scope="col">Estado</th>
+                      <th scope="col" id="calendar-actions-th" class="d-none text-center"></th>
                     </tr>
                   </thead>
                   <tbody id="calendar-body">
@@ -294,6 +305,156 @@
             <button type="submit" class="btn btn-canoe-primary w-100" id="loginSubmitBtn">
               <i class="bi bi-box-arrow-in-right me-2"></i>Iniciar sesión
             </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: EDITAR PARTIDO -->
+  <div class="modal fade" id="editMatchModal" tabindex="-1" aria-labelledby="editMatchModalLabel" aria-modal="true" role="dialog">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content modal-canoe">
+        <div class="modal-header border-0 pb-0">
+          <h5 class="modal-title" id="editMatchModalLabel">
+            <i class="bi bi-pencil-fill me-2 text-accent"></i>Editar partido
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body pt-3">
+          <form id="editMatchForm" novalidate>
+            <div class="row g-3 mb-3">
+              <div class="col-6">
+                <label for="editMatchDate" class="form-label text-light">Fecha (DD/MM/AAAA) *</label>
+                <input type="text" class="form-control form-control-canoe" id="editMatchDate" required maxlength="10" placeholder="25/05/2026" />
+              </div>
+              <div class="col-6">
+                <label for="editMatchTime" class="form-label text-light">Hora</label>
+                <input type="text" class="form-control form-control-canoe" id="editMatchTime" maxlength="5" placeholder="17:00" />
+              </div>
+            </div>
+            <div class="row g-3 mb-3">
+              <div class="col-6">
+                <label for="editMatchHome" class="form-label text-light">Equipo local *</label>
+                <input type="text" class="form-control form-control-canoe" id="editMatchHome" required maxlength="100" />
+              </div>
+              <div class="col-6">
+                <label for="editMatchAway" class="form-label text-light">Equipo visitante *</label>
+                <input type="text" class="form-control form-control-canoe" id="editMatchAway" required maxlength="100" />
+              </div>
+            </div>
+            <div class="row g-3 mb-3">
+              <div class="col-8">
+                <label for="editMatchVenue" class="form-label text-light">Campo</label>
+                <input type="text" class="form-control form-control-canoe" id="editMatchVenue" maxlength="200" />
+              </div>
+              <div class="col-4">
+                <label for="editMatchSortOrder" class="form-label text-light">Orden</label>
+                <input type="number" class="form-control form-control-canoe" id="editMatchSortOrder" min="0" value="0" />
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="editMatchCompetition" class="form-label text-light">Competición</label>
+              <input type="text" class="form-control form-control-canoe" id="editMatchCompetition" maxlength="100" />
+            </div>
+            <div class="mb-3">
+              <label for="editMatchStatus" class="form-label text-light">Estado</label>
+              <select class="form-select form-control-canoe" id="editMatchStatus">
+                <option value="upcoming">Pendiente</option>
+                <option value="win">Victoria</option>
+                <option value="draw">Empate</option>
+                <option value="loss">Derrota</option>
+              </select>
+            </div>
+            <div class="row g-3 mb-4 d-none" id="editMatchScoreFields">
+              <div class="col-6">
+                <label for="editMatchHomeScore" class="form-label text-light">Goles local</label>
+                <input type="number" class="form-control form-control-canoe" id="editMatchHomeScore" min="0" />
+              </div>
+              <div class="col-6">
+                <label for="editMatchAwayScore" class="form-label text-light">Goles visitante</label>
+                <input type="number" class="form-control form-control-canoe" id="editMatchAwayScore" min="0" />
+              </div>
+            </div>
+            <div class="d-flex gap-2">
+              <button type="button" class="btn btn-outline-secondary flex-grow-1" data-bs-dismiss="modal">Cancelar</button>
+              <button type="submit" class="btn btn-canoe-primary flex-grow-1" id="editMatchSaveBtn">Guardar cambios</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: AÑADIR PARTIDO -->
+  <div class="modal fade" id="addMatchModal" tabindex="-1" aria-labelledby="addMatchModalLabel" aria-modal="true" role="dialog">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content modal-canoe">
+        <div class="modal-header border-0 pb-0">
+          <h5 class="modal-title" id="addMatchModalLabel">
+            <i class="bi bi-plus-circle-fill me-2 text-accent"></i>Añadir partido
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body pt-3">
+          <form id="addMatchForm" novalidate>
+            <div class="row g-3 mb-3">
+              <div class="col-6">
+                <label for="addMatchDate" class="form-label text-light">Fecha (DD/MM/AAAA) *</label>
+                <input type="text" class="form-control form-control-canoe" id="addMatchDate" required maxlength="10" placeholder="25/05/2026" />
+              </div>
+              <div class="col-6">
+                <label for="addMatchTime" class="form-label text-light">Hora</label>
+                <input type="text" class="form-control form-control-canoe" id="addMatchTime" maxlength="5" placeholder="17:00" />
+              </div>
+            </div>
+            <div class="row g-3 mb-3">
+              <div class="col-6">
+                <label for="addMatchHome" class="form-label text-light">Equipo local *</label>
+                <input type="text" class="form-control form-control-canoe" id="addMatchHome" required maxlength="100" placeholder="Real Canoe NC" />
+              </div>
+              <div class="col-6">
+                <label for="addMatchAway" class="form-label text-light">Equipo visitante *</label>
+                <input type="text" class="form-control form-control-canoe" id="addMatchAway" required maxlength="100" placeholder="Rival" />
+              </div>
+            </div>
+            <div class="row g-3 mb-3">
+              <div class="col-8">
+                <label for="addMatchVenue" class="form-label text-light">Campo</label>
+                <input type="text" class="form-control form-control-canoe" id="addMatchVenue" maxlength="200" placeholder="Campo del Real Canoe, Madrid" />
+              </div>
+              <div class="col-4">
+                <label for="addMatchSortOrder" class="form-label text-light">Orden</label>
+                <input type="number" class="form-control form-control-canoe" id="addMatchSortOrder" min="0" value="0" />
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="addMatchCompetition" class="form-label text-light">Competición</label>
+              <input type="text" class="form-control form-control-canoe" id="addMatchCompetition" maxlength="100" placeholder="Liga Madrileña 2025/26" />
+            </div>
+            <div class="mb-3">
+              <label for="addMatchStatus" class="form-label text-light">Estado</label>
+              <select class="form-select form-control-canoe" id="addMatchStatus">
+                <option value="upcoming">Pendiente</option>
+                <option value="win">Victoria</option>
+                <option value="draw">Empate</option>
+                <option value="loss">Derrota</option>
+              </select>
+            </div>
+            <div class="row g-3 mb-4 d-none" id="addMatchScoreFields">
+              <div class="col-6">
+                <label for="addMatchHomeScore" class="form-label text-light">Goles local</label>
+                <input type="number" class="form-control form-control-canoe" id="addMatchHomeScore" min="0" />
+              </div>
+              <div class="col-6">
+                <label for="addMatchAwayScore" class="form-label text-light">Goles visitante</label>
+                <input type="number" class="form-control form-control-canoe" id="addMatchAwayScore" min="0" />
+              </div>
+            </div>
+            <div class="d-flex gap-2">
+              <button type="button" class="btn btn-outline-secondary flex-grow-1" data-bs-dismiss="modal">Cancelar</button>
+              <button type="submit" class="btn btn-canoe-primary flex-grow-1" id="addMatchSaveBtn">Añadir partido</button>
+            </div>
           </form>
         </div>
       </div>

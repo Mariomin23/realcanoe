@@ -1,6 +1,8 @@
 const Controller = (() => {
 
-  let _currentUser = null;
+  let _currentUser  = null;
+  let _newsCache    = [];
+  let _matchesCache = [];
 
   /* =============================================
      INIT
@@ -19,6 +21,10 @@ const Controller = (() => {
     _initLoginModal();
     _initEditPlayerModal();
     _initAddPlayerModal();
+    _initEditNewsModal();
+    _initAddNewsModal();
+    _initEditMatchModal();
+    _initAddMatchModal();
   }
 
   /* =============================================
@@ -49,11 +55,14 @@ const Controller = (() => {
         Model.getNews()
       ]);
 
+      _newsCache    = news;
+      _matchesCache = calendar;
+
       View.renderUpcomingMatches(matches);
       View.renderPlayers(players, _currentUser?.role);
-      View.renderCalendarMatches(calendar);
+      View.renderCalendarMatches(calendar, _currentUser?.role);
       View.renderStandings(standings);
-      View.renderNews(news);
+      View.renderNews(news, _currentUser?.role);
     } catch (err) {
       console.error('Error cargando datos:', err.message);
     }
@@ -449,6 +458,260 @@ const Controller = (() => {
   }
 
   /* =============================================
+     EDIT NEWS MODAL
+  ============================================= */
+  function _initEditNewsModal() {
+    const form = document.getElementById('editNewsForm');
+    if (!form) return;
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const id = form.dataset.newsId;
+      if (!id) return;
+
+      const saveBtn = document.getElementById('editNewsSaveBtn');
+      if (saveBtn) { saveBtn.disabled = true; saveBtn.textContent = 'Guardando...'; }
+
+      const data = {
+        title:    document.getElementById('editNewsTitle').value.trim(),
+        excerpt:  document.getElementById('editNewsExcerpt').value.trim(),
+        date:     document.getElementById('editNewsDate').value.trim(),
+        category: document.getElementById('editNewsCategory').value.trim(),
+        image:    document.getElementById('editNewsImage').value.trim()
+      };
+
+      try {
+        await Model.updateNews(id, data);
+        bootstrap.Modal.getInstance(document.getElementById('editNewsModal'))?.hide();
+        const news = await Model.getNews();
+        _newsCache = news;
+        View.renderNews(news, _currentUser?.role);
+      } catch (err) {
+        alert('Error: ' + err.message);
+      } finally {
+        if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Guardar cambios'; }
+      }
+    });
+  }
+
+  /* =============================================
+     ADD NEWS MODAL
+  ============================================= */
+  function _initAddNewsModal() {
+    const form = document.getElementById('addNewsForm');
+    if (!form) return;
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const saveBtn = document.getElementById('addNewsSaveBtn');
+      if (saveBtn) { saveBtn.disabled = true; saveBtn.textContent = 'Guardando...'; }
+
+      const data = {
+        title:    document.getElementById('addNewsTitle').value.trim(),
+        excerpt:  document.getElementById('addNewsExcerpt').value.trim(),
+        date:     document.getElementById('addNewsDate').value.trim(),
+        category: document.getElementById('addNewsCategory').value.trim(),
+        image:    document.getElementById('addNewsImage').value.trim()
+      };
+
+      try {
+        await Model.createNews(data);
+        bootstrap.Modal.getInstance(document.getElementById('addNewsModal'))?.hide();
+        form.reset();
+        const news = await Model.getNews();
+        _newsCache = news;
+        View.renderNews(news, _currentUser?.role);
+      } catch (err) {
+        alert('Error: ' + err.message);
+      } finally {
+        if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Añadir noticia'; }
+      }
+    });
+  }
+
+  /* =============================================
+     EDIT MATCH MODAL
+  ============================================= */
+  function _initEditMatchModal() {
+    const form = document.getElementById('editMatchForm');
+    if (!form) return;
+
+    const statusSelect  = document.getElementById('editMatchStatus');
+    const scoreFields   = document.getElementById('editMatchScoreFields');
+
+    statusSelect?.addEventListener('change', () => {
+      if (scoreFields) scoreFields.classList.toggle('d-none', statusSelect.value === 'upcoming');
+    });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const id = form.dataset.matchId;
+      if (!id) return;
+
+      const saveBtn = document.getElementById('editMatchSaveBtn');
+      if (saveBtn) { saveBtn.disabled = true; saveBtn.textContent = 'Guardando...'; }
+
+      const status = document.getElementById('editMatchStatus').value;
+      const data = {
+        date:        document.getElementById('editMatchDate').value.trim(),
+        time:        document.getElementById('editMatchTime').value.trim(),
+        homeTeam:    document.getElementById('editMatchHome').value.trim(),
+        awayTeam:    document.getElementById('editMatchAway').value.trim(),
+        venue:       document.getElementById('editMatchVenue').value.trim(),
+        competition: document.getElementById('editMatchCompetition').value.trim(),
+        status,
+        sortOrder:   Number(document.getElementById('editMatchSortOrder').value) || 0,
+        homeScore:   status !== 'upcoming' ? Number(document.getElementById('editMatchHomeScore').value) : null,
+        awayScore:   status !== 'upcoming' ? Number(document.getElementById('editMatchAwayScore').value) : null
+      };
+
+      try {
+        await Model.updateMatch(id, data);
+        bootstrap.Modal.getInstance(document.getElementById('editMatchModal'))?.hide();
+        const calendar = await Model.getCalendarMatches();
+        _matchesCache = calendar;
+        View.renderCalendarMatches(calendar, _currentUser?.role);
+      } catch (err) {
+        alert('Error: ' + err.message);
+      } finally {
+        if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Guardar cambios'; }
+      }
+    });
+  }
+
+  /* =============================================
+     ADD MATCH MODAL
+  ============================================= */
+  function _initAddMatchModal() {
+    const form = document.getElementById('addMatchForm');
+    if (!form) return;
+
+    const statusSelect = document.getElementById('addMatchStatus');
+    const scoreFields  = document.getElementById('addMatchScoreFields');
+
+    statusSelect?.addEventListener('change', () => {
+      if (scoreFields) scoreFields.classList.toggle('d-none', statusSelect.value === 'upcoming');
+    });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const saveBtn = document.getElementById('addMatchSaveBtn');
+      if (saveBtn) { saveBtn.disabled = true; saveBtn.textContent = 'Guardando...'; }
+
+      const status = document.getElementById('addMatchStatus').value;
+      const data = {
+        date:        document.getElementById('addMatchDate').value.trim(),
+        time:        document.getElementById('addMatchTime').value.trim(),
+        homeTeam:    document.getElementById('addMatchHome').value.trim(),
+        awayTeam:    document.getElementById('addMatchAway').value.trim(),
+        venue:       document.getElementById('addMatchVenue').value.trim(),
+        competition: document.getElementById('addMatchCompetition').value.trim(),
+        status,
+        sortOrder:   Number(document.getElementById('addMatchSortOrder').value) || 0,
+        homeScore:   status !== 'upcoming' ? Number(document.getElementById('addMatchHomeScore').value) : null,
+        awayScore:   status !== 'upcoming' ? Number(document.getElementById('addMatchAwayScore').value) : null
+      };
+
+      try {
+        await Model.createMatch(data);
+        bootstrap.Modal.getInstance(document.getElementById('addMatchModal'))?.hide();
+        form.reset();
+        if (scoreFields) scoreFields.classList.add('d-none');
+        const calendar = await Model.getCalendarMatches();
+        _matchesCache = calendar;
+        View.renderCalendarMatches(calendar, _currentUser?.role);
+      } catch (err) {
+        alert('Error: ' + err.message);
+      } finally {
+        if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Añadir partido'; }
+      }
+    });
+  }
+
+  /* =============================================
+     PUBLIC: OPEN EDIT NEWS
+  ============================================= */
+  function openEditNews(id) {
+    const item = _newsCache.find(n => n._id === id);
+    if (!item) return;
+
+    const form = document.getElementById('editNewsForm');
+    if (!form) return;
+
+    form.dataset.newsId = id;
+    document.getElementById('editNewsTitle').value    = item.title    || '';
+    document.getElementById('editNewsExcerpt').value  = item.excerpt  || '';
+    document.getElementById('editNewsDate').value     = item.date     || '';
+    document.getElementById('editNewsCategory').value = item.category || '';
+    document.getElementById('editNewsImage').value    = item.image    || '';
+
+    new bootstrap.Modal(document.getElementById('editNewsModal')).show();
+  }
+
+  /* =============================================
+     PUBLIC: CONFIRM DELETE NEWS
+  ============================================= */
+  async function confirmDeleteNews(id, title) {
+    if (!confirm(`¿Eliminar la noticia "${title}"? Esta acción no se puede deshacer.`)) return;
+
+    try {
+      await Model.deleteNews(id);
+      const news = await Model.getNews();
+      _newsCache = news;
+      View.renderNews(news, _currentUser?.role);
+    } catch (err) {
+      alert('Error: ' + err.message);
+    }
+  }
+
+  /* =============================================
+     PUBLIC: OPEN EDIT MATCH
+  ============================================= */
+  function openEditMatch(id) {
+    const match = _matchesCache.find(m => m._id === id);
+    if (!match) return;
+
+    const form = document.getElementById('editMatchForm');
+    if (!form) return;
+
+    form.dataset.matchId = id;
+    document.getElementById('editMatchDate').value        = match.date        || '';
+    document.getElementById('editMatchTime').value        = match.time        || '';
+    document.getElementById('editMatchHome').value        = match.homeTeam    || '';
+    document.getElementById('editMatchAway').value        = match.awayTeam    || '';
+    document.getElementById('editMatchVenue').value       = match.venue       || '';
+    document.getElementById('editMatchCompetition').value = match.competition || '';
+    document.getElementById('editMatchStatus').value      = match.status      || 'upcoming';
+    document.getElementById('editMatchSortOrder').value   = match.sortOrder   ?? 0;
+
+    const scoreFields = document.getElementById('editMatchScoreFields');
+    if (scoreFields) scoreFields.classList.toggle('d-none', match.status === 'upcoming');
+
+    if (match.status !== 'upcoming') {
+      document.getElementById('editMatchHomeScore').value = match.homeScore ?? '';
+      document.getElementById('editMatchAwayScore').value = match.awayScore ?? '';
+    }
+
+    new bootstrap.Modal(document.getElementById('editMatchModal')).show();
+  }
+
+  /* =============================================
+     PUBLIC: CONFIRM DELETE MATCH
+  ============================================= */
+  async function confirmDeleteMatch(id) {
+    if (!confirm('¿Eliminar este partido? Esta acción no se puede deshacer.')) return;
+
+    try {
+      await Model.deleteMatch(id);
+      const calendar = await Model.getCalendarMatches();
+      _matchesCache = calendar;
+      View.renderCalendarMatches(calendar, _currentUser?.role);
+    } catch (err) {
+      alert('Error: ' + err.message);
+    }
+  }
+
+  /* =============================================
      FOOTER YEAR
   ============================================= */
   function _setFooterYear() {
@@ -459,7 +722,15 @@ const Controller = (() => {
   /* =============================================
      API PÚBLICA
   ============================================= */
-  return { init, openEditPlayer, confirmDeletePlayer };
+  return {
+    init,
+    openEditPlayer,
+    confirmDeletePlayer,
+    openEditNews,
+    confirmDeleteNews,
+    openEditMatch,
+    confirmDeleteMatch
+  };
 
 })();
 

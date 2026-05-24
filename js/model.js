@@ -68,8 +68,66 @@ const Model = (() => {
     getCalendarMatches: () => _get(`${BASE}/matches/calendar`),
     getStandings:       () => _get(`${BASE}/matches/standings`),
 
+    createMatch: async (data) => {
+      const res = await _authedFetch(`${BASE}/matches`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || 'Error al crear partido');
+      return json;
+    },
+
+    updateMatch: async (id, data) => {
+      const res = await _authedFetch(`${BASE}/matches/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || 'Error al actualizar partido');
+      return json;
+    },
+
+    deleteMatch: async (id) => {
+      const res = await _authedFetch(`${BASE}/matches/${id}`, { method: 'DELETE' });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || 'Error al eliminar partido');
+      return json;
+    },
+
     /* ---- News ---- */
     getNews: () => _get(`${BASE}/news`),
+
+    createNews: async (data) => {
+      const res = await _authedFetch(`${BASE}/news`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || 'Error al crear noticia');
+      return json;
+    },
+
+    updateNews: async (id, data) => {
+      const res = await _authedFetch(`${BASE}/news/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || 'Error al actualizar noticia');
+      return json;
+    },
+
+    deleteNews: async (id) => {
+      const res = await _authedFetch(`${BASE}/news/${id}`, { method: 'DELETE' });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || 'Error al eliminar noticia');
+      return json;
+    },
 
     /* ---- Contact ---- */
     submitContactForm: async (data) => {

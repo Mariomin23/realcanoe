@@ -129,9 +129,15 @@ const View = (() => {
   /* =============================================
      RENDER: CALENDARIO
   ============================================= */
-  function renderCalendarMatches(matches) {
+  function renderCalendarMatches(matches, userRole) {
     const tbody = document.getElementById('calendar-body');
     if (!tbody) return;
+
+    const canEdit   = userRole === 'admin' || userRole === 'superadmin';
+    const canDelete = userRole === 'superadmin';
+
+    const actionsTh = document.getElementById('calendar-actions-th');
+    if (actionsTh) actionsTh.classList.toggle('d-none', !canEdit);
 
     tbody.innerHTML = matches.map(match => {
       const resultHtml = match.status === 'upcoming'
@@ -140,13 +146,25 @@ const View = (() => {
 
       const statusIcon = match.status === 'win' ? '✅' : match.status === 'draw' ? '🟡' : match.status === 'loss' ? '❌' : '⏳';
 
+      const actionsTd = canEdit ? `
+        <td class="text-center">
+          <button class="btn-admin-edit" onclick="Controller.openEditMatch('${match._id}')" title="Editar partido" aria-label="Editar partido">
+            <i class="bi bi-pencil-fill"></i>
+          </button>
+          ${canDelete ? `
+          <button class="btn-admin-delete ms-1" onclick="Controller.confirmDeleteMatch('${match._id}')" title="Eliminar partido" aria-label="Eliminar partido">
+            <i class="bi bi-trash-fill"></i>
+          </button>` : ''}
+        </td>` : '';
+
       return `
         <tr>
           <td><span style="font-weight:600; color:var(--color-primary)">${match.date}</span></td>
-          <td><span style="font-weight: ${match.home === 'Real Canoe NC' ? '700' : '400'}">${match.home}</span></td>
+          <td><span style="font-weight: ${match.homeTeam === 'Real Canoe NC' ? '700' : '400'}">${match.homeTeam}</span></td>
           <td class="text-center">${resultHtml}</td>
-          <td><span style="font-weight: ${match.away === 'Real Canoe NC' ? '700' : '400'}">${match.away}</span></td>
+          <td><span style="font-weight: ${match.awayTeam === 'Real Canoe NC' ? '700' : '400'}">${match.awayTeam}</span></td>
           <td class="text-center" aria-label="Estado: ${match.status}">${statusIcon}</td>
+          ${actionsTd}
         </tr>`;
     }).join('');
   }
@@ -178,13 +196,36 @@ const View = (() => {
   /* =============================================
      RENDER: NOTICIAS
   ============================================= */
-  function renderNews(newsItems) {
+  function renderNews(newsItems, userRole) {
     const container = document.getElementById('news-container');
     if (!container) return;
 
+    const canEdit   = userRole === 'admin' || userRole === 'superadmin';
+    const canDelete = userRole === 'superadmin';
+
     container.innerHTML = newsItems.map((item, i) => `
       <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="${(i % 3) * 80}">
-        <article class="news-card" aria-label="Noticia: ${item.title}">
+        <article class="news-card position-relative" aria-label="Noticia: ${item.title}">
+          ${canEdit ? `
+          <div class="player-admin-actions">
+            <button
+              class="btn-admin-edit"
+              onclick="Controller.openEditNews('${item._id}')"
+              title="Editar noticia"
+              aria-label="Editar ${_escAttr(item.title)}"
+            >
+              <i class="bi bi-pencil-fill"></i>
+            </button>
+            ${canDelete ? `
+            <button
+              class="btn-admin-delete"
+              onclick="Controller.confirmDeleteNews('${item._id}', '${_escAttr(item.title)}')"
+              title="Eliminar noticia"
+              aria-label="Eliminar ${_escAttr(item.title)}"
+            >
+              <i class="bi bi-trash-fill"></i>
+            </button>` : ''}
+          </div>` : ''}
           <div class="news-card-img">
             <img
               src="${item.image}"
@@ -223,6 +264,9 @@ const View = (() => {
 
     if (!loginBtn || !userInfo) return;
 
+    const addNewsBtn  = document.getElementById('addNewsBtn');
+    const addMatchBtn = document.getElementById('addMatchBtn');
+
     if (user) {
       loginBtn.classList.add('d-none');
       userInfo.classList.remove('d-none');
@@ -230,10 +274,14 @@ const View = (() => {
 
       const canEdit = user.role === 'admin' || user.role === 'superadmin';
       if (addPlayerBtn) addPlayerBtn.classList.toggle('d-none', !canEdit);
+      if (addNewsBtn)   addNewsBtn.classList.toggle('d-none', !canEdit);
+      if (addMatchBtn)  addMatchBtn.classList.toggle('d-none', !canEdit);
     } else {
       loginBtn.classList.remove('d-none');
       userInfo.classList.add('d-none');
       if (addPlayerBtn) addPlayerBtn.classList.add('d-none');
+      if (addNewsBtn)   addNewsBtn.classList.add('d-none');
+      if (addMatchBtn)  addMatchBtn.classList.add('d-none');
     }
   }
 
