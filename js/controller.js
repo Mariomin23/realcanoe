@@ -25,12 +25,24 @@ const Controller = (() => {
   /* =============================================
      RENDER ALL SECTIONS
   ============================================= */
-  function _renderAllSections() {
-    View.renderUpcomingMatches(Model.getUpcomingMatches());
-    View.renderPlayers(Model.getPlayers());
-    View.renderCalendarMatches(Model.getCalendarMatches());
-    View.renderStandings(Model.getStandings());
-    View.renderNews(Model.getNews());
+  async function _renderAllSections() {
+    try {
+      const [matches, players, calendar, standings, news] = await Promise.all([
+        Model.getUpcomingMatches(),
+        Model.getPlayers(),
+        Model.getCalendarMatches(),
+        Model.getStandings(),
+        Model.getNews()
+      ]);
+
+      View.renderUpcomingMatches(matches);
+      View.renderPlayers(players);
+      View.renderCalendarMatches(calendar);
+      View.renderStandings(standings);
+      View.renderNews(news);
+    } catch (err) {
+      console.error('Error cargando datos:', err.message);
+    }
   }
 
   /* =============================================
@@ -67,26 +79,29 @@ const Controller = (() => {
     const filterBtns = document.querySelectorAll('.btn-filter');
 
     filterBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        // Actualizar botón activo
+      btn.addEventListener('click', async () => {
         filterBtns.forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
 
         const filter = btn.dataset.filter;
 
-        // Re-renderizar jugadores con filtro
-        const filteredPlayers = Model.getPlayersByCategory(filter);
-        View.renderPlayers(filteredPlayers);
+        try {
+          const filteredPlayers = await Model.getPlayersByCategory(filter);
 
-        // Animación de entrada
-        const container = document.getElementById('players-container');
-        container.style.opacity = '0';
-        container.style.transform = 'translateY(20px)';
-        requestAnimationFrame(() => {
-          container.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
-          container.style.opacity = '1';
-          container.style.transform = 'translateY(0)';
-        });
+          const container = document.getElementById('players-container');
+          container.style.opacity = '0';
+          container.style.transform = 'translateY(20px)';
+
+          View.renderPlayers(filteredPlayers);
+
+          requestAnimationFrame(() => {
+            container.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+            container.style.opacity = '1';
+            container.style.transform = 'translateY(0)';
+          });
+        } catch (err) {
+          console.error('Error filtrando jugadores:', err.message);
+        }
       });
     });
   }
@@ -270,7 +285,7 @@ const Controller = (() => {
     const step = (currentTime) => {
       const elapsed = currentTime - startTime;
       const progress = Math.min(elapsed / duration, 1);
-      const eased = 1 - Math.pow(1 - progress, 3); // easeOutCubic
+      const eased = 1 - Math.pow(1 - progress, 3);
       el.textContent = Math.floor(start + eased * range);
       if (progress < 1) requestAnimationFrame(step);
     };
@@ -279,7 +294,7 @@ const Controller = (() => {
   }
 
   /* =============================================
-     FOOT YEAR
+     FOOTER YEAR
   ============================================= */
   function _setFooterYear() {
     const el = document.getElementById('footerYear');
@@ -293,7 +308,6 @@ const Controller = (() => {
 
 })();
 
-/* Inicializar cuando el DOM esté listo */
 document.addEventListener('DOMContentLoaded', () => {
   Controller.init();
 });
