@@ -65,7 +65,7 @@ const View = (() => {
     }
 
     container.innerHTML = players.map((player, i) => `
-      <div class="col-xl-4 col-lg-4 col-md-6 player-item" data-category="${player.category}" data-aos="fade-up" data-aos-delay="${(i % 3) * 100}">
+      <div class="col-6 col-md-6 col-lg-4 col-xl-4 player-item" data-category="${player.category}">
         <article class="player-card position-relative" aria-label="Jugador: ${player.name}">
           ${canEdit ? `
           <div class="player-admin-actions">

@@ -1692,6 +1692,56 @@ a {
   }
 
   .hero-stats .stat-number { font-size: 2rem; }
+
+  /* Player cards — 2 per row on mobile */
+  .player-card-img {
+    height: 160px;
+  }
+  .player-avatar {
+    width: 76px;
+    height: 76px;
+    border-width: 3px;
+  }
+  .player-number {
+    width: 30px;
+    height: 30px;
+    font-size: 0.8rem;
+    top: 8px;
+    right: 8px;
+  }
+  .player-position-badge {
+    font-size: 0.55rem;
+    letter-spacing: 0.5px;
+    padding: 3px 8px;
+    bottom: 8px;
+    max-width: 90%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .player-card-body {
+    padding: 10px;
+  }
+  .player-card-body > p {
+    display: none;
+  }
+  .player-name {
+    font-size: 0.8rem;
+    margin-bottom: 2px;
+  }
+  .player-details {
+    gap: 4px;
+    margin-top: 8px;
+  }
+  .player-stat {
+    padding: 5px 2px;
+  }
+  .player-stat-value {
+    font-size: 1rem;
+  }
+  .player-stat-label {
+    font-size: 0.5rem;
+    letter-spacing: 0.3px;
+  }
 }
 
 /* ========================
