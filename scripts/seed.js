@@ -31,7 +31,7 @@ const matches = [
 ];
 
 const news = [
-  { title: "Gran victoria ante el Alcobendas RC en la apertura de liga", excerpt: "El equipo mostró una gran actuación colectiva con un resultado de 28-14 que consolida el liderato en la liga madrileña de rugby.", date: "11 Enero 2025", category: "Partido", image: "https://www.realcanoe.es/images/2025/05/18/rugby.png" },
+  { title: "Gran victoria ante el Alcobendas RC en la apertura de liga", excerpt: "El equipo mostró una gran actuación colectiva con un resultado de 28-14 que consolida el liderato en la liga madrileña de rugby.", date: "11 Enero 2025", category: "Partido", image: "https://rugby.isquad.es/images/afiliacion_clubs/204/square_70776a67326b306a7738.jpg" },
   { title: "Nuevas incorporaciones para reforzar la plantilla 2025/26", excerpt: "El Real Canoe Rugby NC anuncia tres nuevos fichajes para la próxima temporada, reforzando la delantera y la línea trasera.", date: "5 Marzo 2025", category: "Club", image: "https://images.unsplash.com/photo-1529932404-13d98da5574f?w=600&q=80" },
   { title: "Inscripciones abiertas para el campus de verano de rugby", excerpt: "Dal 5 al 20 de julio, el Real Canoe organiza su campus de verano de rugby para jóvenes de entre 8 y 17 años en Madrid.", date: "20 Marzo 2025", category: "Academia", image: "https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=600&q=80" },
   { title: "El equipo sube al liderato tras 5 jornadas de liga", excerpt: "Con 23 puntos en 6 partidos, el Real Canoe NC lidera la clasificación de la liga madrileña de rugby a falta de dos jornadas.", date: "30 Marzo 2025", category: "Liga", image: "https://images.unsplash.com/photo-1494913148647-353ae514b35e?w=600&q=80" },
