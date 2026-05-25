@@ -1751,6 +1751,19 @@ a {
     font-size: 0.5rem;
     letter-spacing: 0.3px;
   }
+
+  .table-calendar thead th {
+    padding: 8px 10px;
+    font-size: 0.72rem;
+  }
+  .table-calendar tbody td {
+    padding: 10px 8px;
+    font-size: 0.8rem;
+  }
+  .result-badge {
+    padding: 3px 8px;
+    font-size: 0.8rem;
+  }
 }
 
 /* ========================
